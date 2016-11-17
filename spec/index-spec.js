@@ -3,8 +3,8 @@
 describe('Index', function() {
 
 	it('should run as a background service and repsond when pinged', () => {
-//run server thread through index.js using port 8080
-//ping localhost:(portnumber)
+//run server thread through index.js using OVS
+//ping OVS server that index.js is running on
 //expect a response
 //else fail
 	})
