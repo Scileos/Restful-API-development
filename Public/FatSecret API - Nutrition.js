@@ -53,11 +53,16 @@ reqObject.oauth_signature = oauthSig
 
 /**Simple restful GET request using the headers from our object */
 
- rest.get(FS_URL, {
-	data: reqObject
-}) .on('complete', function(data, response) {
-	console.log(data)
-})
+exports.GetRequest = () =>
+	new Promise((resolve) => {
+		rest.get(FS_URL, {
+			data: reqObject
+		}) .on('complete', function(data) {
+			const res = data.food.food_name
+			resolve(res)
+		})
+	})
+
 
 
 
