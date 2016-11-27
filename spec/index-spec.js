@@ -1,5 +1,5 @@
 'use strict'
-/** 
+
 describe('Index', function() {
 
 	it('should run as a background service and repsond when pinged', () => {
@@ -14,5 +14,3 @@ describe('Index', function() {
 	})
 
 })
-
-*/

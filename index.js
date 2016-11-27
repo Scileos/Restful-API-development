@@ -2,9 +2,7 @@
 
 const restify = require('restify')
 const server = restify.createServer()
-
-const Recipes = require('./Public/Spoonacular API - Recipes.js')
-const Nutrition = require('./Public/FatSecret API - Nutrition.js')
+const FS_API = require ('./Public/FatSecret API - Nutrition.js')
 
 const defaultPort = 3000
 
@@ -18,13 +16,13 @@ server.listen(port, function(err) {
 }
 )
 
-
-
-/** test GET request 
-	server.get ('/Ingredient/Nutrition', function(req, res) {
-	const Ingredient_ID = req.params.ID
-
-	console.log('Getting nutrtion based on ingredient')
-	const data = Nutrition.getByID(Ingredient_ID)
-}
- ) */
+server.get('/ingredient/:ingredientID', function(req, res) {
+	console.log('Getting values based on ingredient ID')
+	const ingredientID = req.params.ingredientID
+	FS_API.GetIngredientID(ingredientID).then((result) => {
+		res.setHeader('content-type', 'application/json')
+		res.setHeader('Allow', 'GET')
+		res.send(result)
+		res.end
+	})
+})
