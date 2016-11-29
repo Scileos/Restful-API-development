@@ -35,16 +35,13 @@ server.get('/ingredient/:ingredientID', function(req, res) {
 	})
 })
 
-exports.Recipe_Get = (ingredients) => {
-	server.get(`recipe/${ingredients}`, function(req, res) {
-		const ingredients = req.params.ingredients
-		SP_API.GetRecipes(ingredients).then((result) => {
-			res.setHeader('content-type', 'application/json')
-			res.setHeader('Allow', 'GET')
-			res.send(result)
-			res.end
-			console.log(result)
-		})
+server.get(`recipe/:ingredients`, function(req, res) {
+	const ingredients = req.params.ingredients
+	SP_API.GetRecipes(ingredients).then((result) => {
+		res.setHeader('content-type', 'application/json')
+		res.setHeader('Allow', 'GET')
+		res.send(result)
+		res.end
+		console.log(result)
 	})
-}
-
+})
