@@ -7,7 +7,9 @@ const inputs = readline.question('Input your ingredients: ')
 
 const recipeID = GetIngredients(inputs)
 
+
 function GetIngredients(inputs) {
+	return new Promise((resolve) => {
 	rest.get(`http://137.74.116.221:3000/recipeIng/${inputs}`
 ).on('complete', function(data) {
 	for (const i in data) {
@@ -21,14 +23,21 @@ function GetIngredients(inputs) {
 	for (const i in data) {
 		if (data[i].title === recipeInput) {
 			const ID = data[i].id
-			return ID
+			resolve(ID)
 		}
 	}
 }
 )}
+)}
 
-rest.get(`http://137.74.116.221:3000/recipe/${recipeID}`
+recipeID.then((data) => {
+	rest.get(`http://137.74.116.221:3000/recipe/${data}`
 	).on('complete', function(data) {
-		console.log(data)
-
+		for (const i in data.extendedIngredients)
+			if (data.extendedIngredients[i].unitLong === '') {
+				console.log(data.extendedIngredients[i].amount + ' ' + data.extendedIngredients[i].name)
+			} else {
+				console.log(data.extendedIngredients[i].amount + ' ' + data.extendedIngredients[i].unitLong + ' of ' + data.extendedIngredients[i].name)
+			}
 	})
+})
