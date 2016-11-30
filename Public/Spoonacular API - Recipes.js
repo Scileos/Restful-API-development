@@ -2,7 +2,7 @@
 
 const SP_Key = 'hSYPFdrWE8mshIwh8iTx7DXbAbjap1dU9pijsnGTR808aCq70h'
 const rest = require ('restler')
-const SP_URL = 'https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?'
+const SP_URL = 'https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/'
 
 function Recipe_URL(ingredient) {
 
@@ -25,7 +25,7 @@ function Recipe_URL(ingredient) {
 
 	paramsStr = paramsStr.substr(1)
 
-	const BaseString = SP_URL + paramsStr
+	const BaseString = SP_URL + 'findByIngredients?' + paramsStr
 
 	return BaseString
 }
@@ -38,6 +38,21 @@ exports.GetRecipes = (ingredients) => {
 				'Accept': 'application/json'
 			}
 		}) .on('complete', function(data) {
+			resolve(data)
+		})
+	})
+}
+
+
+exports.searchById = (recipeID) => {
+	const apiCall = SP_URL + recipeID + '/information?includeNutrition=true'
+	return new Promise((resolve) => {
+		rest.get(apiCall, {
+			headers: {
+				'X-Mashape-Key': 'hSYPFdrWE8mshIwh8iTx7DXbAbjap1dU9pijsnGTR808aCq70h',
+				'Accept': 'application/json'
+			}
+		}).on('complete', function(data) {
 			resolve(data)
 		})
 	})
