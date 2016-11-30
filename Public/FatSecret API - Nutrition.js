@@ -29,7 +29,10 @@ function API_URL(ingredientID) {
 		oauth_version: '1.0'
 	}
 
+/** Assign food_id to be supplied search criteria */
 	reqObject.food_id = ingredientID
+
+
 /** Pump object contents into a variable for URI */
 
 	let paramsStr = ''
