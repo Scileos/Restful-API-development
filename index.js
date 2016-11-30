@@ -45,7 +45,7 @@ server.get('recipeIng/:ingredients', function(req, res) {
 	})
 })
 
-server.get('recipe/:recipeID/', function(req, res) {
+server.get('recipe/:recipeID', function(req, res) {
 	const recipeID = req.params.recipeID
 	SP_API.searchById(recipeID).then((result) => {
 		res.setHeader('content-type', 'application/json')

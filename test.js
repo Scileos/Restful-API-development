@@ -19,8 +19,8 @@ function GetIngredients(inputs) {
 	const recipeInput = readline.question('Which recipe are you interested in?: ')
 	for (const i in data) {
 		if (data[i].title === recipeInput) {
-			const recipeID = data[i].id
-			return recipeID
+			const ID = data[i].id
+			return ID
 		}
 	}
 }
