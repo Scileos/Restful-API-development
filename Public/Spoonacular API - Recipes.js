@@ -46,6 +46,7 @@ exports.GetRecipes = (ingredients) => {
 
 exports.searchById = (recipeID) => {
 	const apiCall = SP_URL + recipeID + '/information?includeNutrition=true'
+	console.log(apiCall)
 	return new Promise((resolve) => {
 		rest.get(apiCall, {
 			headers: {

@@ -4,6 +4,7 @@ const readline = require('readline-sync')
 const rest = require('restler')
 
 const inputs = readline.question('Input your ingredients: ')
+
 const recipeID = GetIngredients(inputs)
 
 function GetIngredients(inputs) {
