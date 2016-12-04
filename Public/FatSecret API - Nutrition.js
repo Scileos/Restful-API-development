@@ -10,7 +10,7 @@ const rest = require('restler')
 const date = new Date
 
 
-function API_URL(ingredientID) {
+function API_URL(search) {
 
 	/** Order of objects matters! Will return error code 8 if not in this order
 	*  because the back end oauth_signature will not match yours 
@@ -19,18 +19,19 @@ function API_URL(ingredientID) {
 	*/
 
 	const reqObject = {
-		food_id: '' ,
 		format: 'json',
-		method: 'food.get',
+		max_results: 1,
+		method: 'foods.search',
 		oauth_consumer_key: FS_Key,
 		oauth_nonce: Math.random().toString(36).replace(/[a-z]/, '').substr(2),
 		oauth_signature_method: 'HMAC-SHA1',
 		oauth_timestamp: Math.floor(date.getTime()/1000),
-		oauth_version: '1.0'
+		oauth_version: '1.0',
+		search_expression: '',
 	}
 
 /** Assign food_id to be supplied search criteria */
-	reqObject.food_id = ingredientID
+	reqObject.search_expression = search
 
 
 /** Pump object contents into a variable for URI */
@@ -61,8 +62,8 @@ function API_URL(ingredientID) {
 	return reqObject
 }
 
-exports.GetIngredientID = (ingredientID) => {
-	const data = API_URL(ingredientID)
+exports.GetNutrition = (search) => {
+	const data = API_URL(search)
 	return new Promise((resolve) => {
 		rest.get(FS_URL, {
 			data: data

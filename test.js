@@ -2,42 +2,42 @@
 
 const readline = require('readline-sync')
 const rest = require('restler')
+const FS_API = require ('./Public/FatSecret API - Nutrition.js')
+const async = require ('async')
 
 const inputs = readline.question('Input your ingredients: ')
 
-const recipeID = GetIngredients(inputs)
-
-
-function GetIngredients(inputs) {
-	return new Promise((resolve) => {
-	rest.get(`http://137.74.116.221:3000/recipeIng/${inputs}`
+rest.get(`http://localhost:3000/recipeIng/${inputs}`
 ).on('complete', function(data) {
-	for (const i in data) {
+	for (const i in data.recipeName) {
 		console.log(
-			'Recipe name: ' + data[i].title + '\n' +
-			'Used ingredients: ' + data[i].usedIngredientCount + '\n' +
-			'Missed ingredients: ' + data[i].missedIngredientCount + '\n'
+			'Recipe name: ' + data.recipeName[i] + '\n' +
+			'Recipe ID: ' + data.recipeID[i] + '\n' +
+			'Ingredients: ' + '\n'
 			)
-	}
-	const recipeInput = readline.question('Which recipe are you interested in?: ')
-	for (const i in data) {
-		if (data[i].title === recipeInput) {
-			const ID = data[i].id
-			resolve(ID)
+		for (const n in data.recipeIngredients[i]) {
+			console.log(
+				'Ingredient: ' + data.recipeIngredients[i][n].Ingredient + '\n',
+				'Amount: ' + data.recipeIngredients[i][n].Amount + '\n',
+				'Unit: ' + data.recipeIngredients[i][n].Unit + '\n'
+			)
 		}
 	}
-}
-)}
-)}
+	const ID = readline.question('Which recipe ID are you interesed in?: ')
+	const IDparse = parseInt(ID)
+	const Nutrition = []
 
-recipeID.then((data) => {
-	rest.get(`http://137.74.116.221:3000/recipe/${data}`
+	async.each(data.recipeIngredients[data.recipeID.indexOf(IDparse)], function(name, callback) {
+		const changeSpace = name.Ingredient.replace(/ /g, '-')
+		rest.get(`http://localhost:3000/nutrition/${changeSpace}`
 	).on('complete', function(data) {
-		for (const i in data.extendedIngredients)
-			if (data.extendedIngredients[i].unitLong === '') {
-				console.log(data.extendedIngredients[i].amount + ' ' + data.extendedIngredients[i].name)
-			} else {
-				console.log(data.extendedIngredients[i].amount + ' ' + data.extendedIngredients[i].unitLong + ' of ' + data.extendedIngredients[i].name)
-			}
+		Nutrition.push({
+			Ingredient: data.foods.food.food_name,
+			food_description: data.foods.food.food_description
+		})
+		callback()
+	})
+	}, function() {
+		console.log(Nutrition)
 	})
 })
