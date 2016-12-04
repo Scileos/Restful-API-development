@@ -26,9 +26,9 @@ server.get('/',
 	})
 )
 
-server.get('/ingredient/:ingredientID', function(req, res) {
-	const ingredientID = req.params.ingredientID
-	FS_API.GetIngredientID(ingredientID).then((result) => {
+server.get('/nutrition/:search', function(req, res) {
+	const search = req.params.search
+	FS_API.GetNutrition(search).then((result) => {
 		res.setHeader('content-type', 'application/json')
 		res.setHeader('Allow', 'GET')
 		res.send(result)
@@ -37,37 +37,37 @@ server.get('/ingredient/:ingredientID', function(req, res) {
 })
 
 server.get('recipeIng/:ingredients', function(req, res) {
+	res.setHeader('content-type', 'application/json')
+	res.setHeader('Allow', 'GET')
 	const ingredients = req.params.ingredients
 
 	new Promise((resolve) => {
 		const recipeObj = {
-		recipeName: [] ,
-		recipeID: [],
-		recipeIngredients: []
-	}
+			recipeName: [] ,
+			recipeID: [],
+			recipeIngredients: []
+		}
 
-	SP_API.GetRecipes(ingredients).then((result) => {
-		for (const i in result) {
-			recipeObj.recipeName[i] = result[i].title
-			recipeObj.recipeID[i] = result[i].id
-		}
-		for (const i in recipeObj.recipeName){
-			recipeObj.recipeIngredients[i] = []
-		}
-		resolve(recipeObj)
-	})
+		SP_API.GetRecipes(ingredients).then((result) => {
+			for (const i in result) {
+				recipeObj.recipeName[i] = result[i].title
+				recipeObj.recipeID[i] = result[i].id
+			}
+			for (const i in recipeObj.recipeName){
+				recipeObj.recipeIngredients[i] = []
+			}
+			resolve(recipeObj)
+		})
 	})
 
 	.then((recipeObj) => {
-		async.forEach(recipeObj.recipeID, function(recipeID, callback) {
+		async.each(recipeObj.recipeID, function(recipeID, callback) {
 			SP_API.searchById(recipeID).then((ID) => {
-				const i = 0
 				for (const n in ID.extendedIngredients) {
-					if (ID.extendedIngredients[n].unitLong === '') {
-						recipeObj.recipeIngredients[recipeObj.recipeID.indexOf(recipeID)][n] = ID.extendedIngredients[n].amount + ' ' + ID.extendedIngredients[n].name
-					} else {
-						recipeObj.recipeIngredients[recipeObj.recipeID.indexOf(recipeID)][n] = ID.extendedIngredients[n].amount + ' ' + ID.extendedIngredients[n].unitLong + ' of ' + ID.extendedIngredients[n].name
-					}
+					recipeObj.recipeIngredients[recipeObj.recipeID.indexOf(recipeID)][n] = {Ingredient: '', Amount: '', Unit: '' }
+					recipeObj.recipeIngredients[recipeObj.recipeID.indexOf(recipeID)][n].Ingredient = ID.extendedIngredients[n].name
+					recipeObj.recipeIngredients[recipeObj.recipeID.indexOf(recipeID)][n].Amount = ID.extendedIngredients[n].amount
+					recipeObj.recipeIngredients[recipeObj.recipeID.indexOf(recipeID)][n].Unit = ID.extendedIngredients[n].unitLong
 				}
 				callback()
 			})
