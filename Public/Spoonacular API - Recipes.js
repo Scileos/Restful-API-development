@@ -1,9 +1,16 @@
 'use strict'
 
-const SP_Key = 'hSYPFdrWE8mshIwh8iTx7DXbAbjap1dU9pijsnGTR808aCq70h'
-const rest = require ('restler')
-const SP_URL = 'https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/'
+const rest = require ('restler')//Used to make CRUD requests
+const SP_URL = 'https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/'//API URL
 
+
+/**
+	* This is a private function that can only be used inside the module.
+			It creates a suitable URL to call the Spoonacular external API
+	*@private
+	*@param {string} ingredient - Takes an input of 1 or more ingredients
+	*@returns {string} URL to send as a request
+ */
 function Recipe_URL(ingredient) {
 
 //Get recipe by ingredient
@@ -29,6 +36,9 @@ function Recipe_URL(ingredient) {
 
 	return BaseString
 }
+
+/** Exports function that sends a GET request and recieves a list of recipes based on the input ingredients */
+
 exports.GetRecipes = (ingredients) => {
 	const apiCall = Recipe_URL(ingredients)
 	return new Promise((resolve) => {
@@ -43,6 +53,7 @@ exports.GetRecipes = (ingredients) => {
 	})
 }
 
+/** Exports function that sends a GET request and recieves detailed information about a recipe based on the input ID */
 
 exports.searchById = (recipeID) => {
 	const apiCall = SP_URL + recipeID + '/information?includeNutrition=true'
@@ -57,6 +68,3 @@ exports.searchById = (recipeID) => {
 		})
 	})
 }
-
-
-//Get Analyze a recipe search for ingredients

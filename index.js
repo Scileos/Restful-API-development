@@ -1,13 +1,14 @@
 'use strict'
 
-const restify = require('restify')
+const restify = require('restify') //Used to create the server
 const server = restify.createServer()
-const FS_API = require ('./Public/FatSecret API - Nutrition.js')
-const SP_API = require ('./Public/Spoonacular API - Recipes.js')
-const readline = require('readline-sync')
-const async = require('async')
+const FS_API = require ('./Public/FatSecret API - Nutrition.js') //Nutrition API
+const SP_API = require ('./Public/Spoonacular API - Recipes.js')//Recipe API
+const async = require('async')//Used to loop through requests one by one
 
 const defaultPort = 3000
+
+/** Create server listening on port 3000 */
 
 const port = process.env.PORT || defaultPort
 server.listen(port, function(err) {
@@ -19,12 +20,15 @@ server.listen(port, function(err) {
 }
 )
 
-server.get('/',
-	restify.serveStatic({
-		directory: './views',
-	 default: 'input.html'
-	})
-)
+/** To be implemented WebAPP front end */
+//server.get('/',
+	//restify.serveStatic({
+		//directory: './views',
+	 //default: 'input.html'
+	//})
+//)
+
+/** Get nutrition based on search criteria, can only take one input */
 
 server.get('/nutrition/:search', function(req, res) {
 	const search = req.params.search
@@ -35,6 +39,8 @@ server.get('/nutrition/:search', function(req, res) {
 		res.end
 	})
 })
+
+/**Get recipes based on input ingredients as well as listing all their ingredients */
 
 server.get('recipeIng/:ingredients', function(req, res) {
 	res.setHeader('content-type', 'application/json')
@@ -78,13 +84,3 @@ server.get('recipeIng/:ingredients', function(req, res) {
 	})
 })
 
-
-server.get('recipe/:recipeID', function(req, res) {
-	const recipeID = req.params.recipeID
-	SP_API.searchById(recipeID).then((result) => {
-		res.setHeader('content-type', 'application/json')
-		res.setHeader('Allow', 'GET')
-		res.send(result)
-		res.end
-	})
-})
