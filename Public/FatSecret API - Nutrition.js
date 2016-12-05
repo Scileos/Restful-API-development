@@ -1,20 +1,23 @@
 'use strict'
 
-const MG_API = require ('./Merging API - ToCall.js')
-
-const FS_Key = 'f861d29a6761473db4ebdb2d2f7bff4e'
-let API_Shared_Secret = '6763ddbf8da14151af37025e94391ac2&'
-const FS_URL = 'http://platform.fatsecret.com/rest/server.api'
-const crypto = require('crypto')
-const rest = require('restler')
+const FS_Key = 'f861d29a6761473db4ebdb2d2f7bff4e' //API private key
+const API_Shared_Secret = '6763ddbf8da14151af37025e94391ac2&' //Shared secret key
+const FS_URL = 'http://platform.fatsecret.com/rest/server.api' //API URL
+const crypto = require('crypto') //SHA1 algorithm converter
+const rest = require('restler')  //Used to make CRUD requests
 const date = new Date
 
-
+/**
+	* This is a private function within the module that creates a suitable URL to call the FatSecret external API
+ @private
+	@param {string}  search - The search criteria - Ingredient
+	@returns {Object} returns an object of parmaters to use in the URL
+	*/
 function API_URL(search) {
 
 	/** Order of objects matters! Will return error code 8 if not in this order
-	*  because the back end oauth_signature will not match yours 
-	
+	*  because the back end oauth_signature will not match yours
+
 	Create object that stores header information
 	*/
 
@@ -30,7 +33,7 @@ function API_URL(search) {
 		search_expression: '',
 	}
 
-/** Assign food_id to be supplied search criteria */
+/** Assign search_expression to be supplied search criteria */
 	reqObject.search_expression = search
 
 
@@ -38,7 +41,7 @@ function API_URL(search) {
 
 	let paramsStr = ''
 
-	for (var i in reqObject){
+	for (const i in reqObject){
 		paramsStr += '&' + i + '=' + reqObject[i]
 	}
 
@@ -61,6 +64,10 @@ function API_URL(search) {
 
 	return reqObject
 }
+
+/** exports function that will get nutritional information for 1 Ingredient
+	* and returns it as a promise
+ */
 
 exports.GetNutrition = (search) => {
 	const data = API_URL(search)
