@@ -2,17 +2,195 @@
 <html>
 <body>
 
-<form method="get">
+<div>
   Ingredients:<br>
-  <input type="text" name="Ingredients" value="">
+  <input type="text" id="Ingredients" value="">
   <br>
-  <input type="submit" value="Submit">
-</form> 
+  <button type="button" id="trigger">Submit</button> 
+</div>
 
-<script>
-  function getElements() {
-    var inputs = document.getElementById("")
+<br>
+
+<div id="nutrDiv">
+  Recipe ID:<br>
+  <input type="text" id="recipeID" value="">
+  <br>
+  <button type="button" id="getNutr">Submit</button>
+</div> 
+
+  <div id="container">
+
+  </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script> type="text/javascript"
+$(document).ready(function() {
+  const div = document.getElementById("container")
+    const par = document.createElement("P")
+    const p = div.appendChild(par)
+  $('#trigger').on('click', function() {
+    par.innerHTML = ''
+    var inputs = document.getElementById("Ingredients").value
+      $.ajax({
+            url: `/recipeIng/${inputs}`,
+            type: 'GET',
+            processData: false,
+            contentType: false,
+            success: function(data){
+              for (const i in data.recipeName) {
+               // if (data.recipeID.length = 0) {
+                //p.appendChild(document.createTextNode('No results found please try again'))
+                //document.body.appendChild(p)
+                //break
+              //} else {
+                  //$(document.getElementById("nutrDiv")).show()
+                  //}
+                p.appendChild(document.createElement("br"))
+                p.appendChild(document.createElement("br"))
+                p.appendChild(document.createTextNode(
+			            'Recipe name: ' + data.recipeName[i] + ',  ' + 'Recipe ID: ' + data.recipeID[i]))   
+               p.appendChild(document.createElement("br"))
+                p.appendChild(document.createTextNode(
+			            'Ingredients: '))
+                p.appendChild(document.createElement("br"))  
+                
+              
+     for (const n in data.recipeIngredients[i]) {
+			p.appendChild(document.createTextNode(
+				'Ingredient: ' + data.recipeIngredients[i][n].Ingredient))
+        p.appendChild(document.createElement("br"))
+      p.appendChild(document.createTextNode(  
+				'Amount: ' + data.recipeIngredients[i][n].Amount))
+        p.appendChild(document.createElement("br"))
+      p.appendChild(document.createTextNode(
+				'Unit: ' + data.recipeIngredients[i][n].Unit))
+        p.appendChild(document.createElement("br"))
+        p.appendChild(document.createElement("br"))
+		}
   }
+  document.body.appendChild(p)
+
+
+$('#getNutr').on('click', function() {
+
+    var totalCal = 0
+    var totalFat = 0
+    var totalCarb = 0
+    var totalProt = 0
+
+/**
+	* A private function used within this module to convert the given unit of measurement into grams in order to be used by FatSecret
+	@private
+	@param {string} unit - The given unit of measurement eg: teaspoon
+	@param {int} amount - The amount of said unit eg: 2 "teaspoons"
+	@returns {int} The converted value
+ */
+function changeToGrams(unit, amount) {
+	let newValue = ''
+	switch(unit) {
+		case 'teaspoons':
+			newValue = amount * 4
+			return newValue
+		case 'teaspoon':
+			newValue = amount * 4
+			return newValue
+		case 'tbsps':
+			newValue = amount * 15
+			return newValue
+		case 'tbsp':
+			newValue = amount * 15
+			return newValue
+		case 'tablespoon':
+			newValue = amount * 15
+			return newValue
+		case 'tablespoons':
+			newValue = amount * 15
+			return newValue
+		case 'cups':
+			newValue = amount * 240
+			return newValue
+		case 'cup':
+			newValue = amount * 240
+			return newValue
+		case 'grams':
+			newValue = amount * 1
+			return newValue
+		case 'milliliters':
+			newValue = amount * 1
+			return newValue
+		case 'liters':
+			newValue = amount * 1000
+			return newValue
+		case 'ounce':
+			newValue = amount * 30
+			return newValue
+		case 'ounces':
+			newValue = amount * 15
+			return newValue
+		case 'pounds':
+			newValue = amount * 455
+			return newValue
+		case 'pound':
+			newValue = amount * 455
+			return newValue
+		case 'lbs':
+			newValue = amount * 455
+			return newValue
+		case 'lb':
+			newValue = amount * 455
+			return newValue
+		default:
+			newValue = amount * 100
+			return newValue
+	}
+}
+
+
+  par.innerHTML = ''
+  const Nutrition = []
+  var ID = document.getElementById("recipeID").value
+  const IDparse = parseInt(ID)
+  const name = data.recipeIngredients[data.recipeID.indexOf(IDparse)]
+	for (const i in data.recipeIngredients[data.recipeID.indexOf(IDparse)]) {
+		const changeSpace = name[i].Ingredient.replace(/ /g, '-')
+     $.ajax({
+            url: `/nutrition/${changeSpace}`,
+            type: 'GET',
+            processData: false,
+            contentType: false,
+            async: false,
+            success: function(info) {
+              console.log(info)
+		Nutrition.push({
+			Ingredient: info.foods.food.food_name,
+			Calories_Kcal: (Math.fround(parseInt(info.foods.food.food_description.split(' ')[info.foods.food.food_description.split(' ').indexOf('Calories:')+1].split('k')[0])/100) * changeToGrams(name[i].Unit.toLowerCase(),name[i].Amount)).toFixed(2),
+			Fat_g: (Math.fround(parseInt(info.foods.food.food_description.split(' ')[info.foods.food.food_description.split(' ').indexOf('Fat:')+1].split('g')[0])/100) * changeToGrams(name[i].Unit.toLowerCase(),name[i].Amount)).toFixed(2),
+			Carbs_g: (Math.fround(parseInt(info.foods.food.food_description.split(' ')[info.foods.food.food_description.split(' ').indexOf('Carbs:')+1].split('g')[0])/100) * changeToGrams(name[i].Unit.toLowerCase(),name[i].Amount)).toFixed(2),
+			Protein_g: (Math.fround(parseInt(info.foods.food.food_description.split(' ')[info.foods.food.food_description.split(' ').indexOf('Protein:')+1].split('g')[0])/100) * changeToGrams(name[i].Unit.toLowerCase(),name[i].Amount)).toFixed(2),
+		})
+    totalCal = totalCal + parseFloat(Nutrition[i].Calories_Kcal)
+    totalFat = totalFat + parseFloat(Nutrition[i].Fat_g)
+    totalCarb = totalCarb + parseFloat(Nutrition[i].Carbs_g)
+    totalProt = totalProt + parseFloat(Nutrition[i].Protein_g)
+    p.appendChild(document.createTextNode(JSON.stringify(Nutrition[i])))
+    p.appendChild(document.createElement("br"))
+            }
+            })
+  }
+  p.appendChild(document.createTextNode('Total Calories: ' + totalCal + ', Total Fat: ' + totalFat + ', Total Carbs: ' + totalCarb + ', Total Protein: ' + totalProt))
+  p.appendChild(document.createElement("br"))
+  p.appendChild(document.createElement("br"))
+  var favButton = p.appendChild(document.createElement('button'))
+  favButton.appendChild(document.createTextNode('Favourite'))
+  document.body.appendChild(p)
+
+
+	})
+	}
+	})
+})
+})
+</script>  
 
 </body>
 </html>

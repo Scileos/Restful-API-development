@@ -20,13 +20,12 @@ server.listen(port, function(err) {
 }
 )
 
-/** To be implemented WebAPP front end */
-//server.get('/',
-	//restify.serveStatic({
-		//directory: './views',
-	 //default: 'input.html'
-	//})
-//)
+server.get('/',
+	restify.serveStatic({
+		directory: './views',
+	 default: 'input.html'
+	})
+)
 
 /** Get nutrition based on search criteria, can only take one input */
 
@@ -42,7 +41,7 @@ server.get('/nutrition/:search', function(req, res) {
 
 /**Get recipes based on input ingredients as well as listing all their ingredients */
 
-server.get('recipeIng/:ingredients', function(req, res) {
+server.get('/recipeIng/:ingredients', function(req, res) {
 	res.setHeader('content-type', 'application/json')
 	res.setHeader('Allow', 'GET')
 	const ingredients = req.params.ingredients
