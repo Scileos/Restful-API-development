@@ -73,6 +73,11 @@ $(document).ready(function() {
 
 $('#getNutr').on('click', function() {
 
+    var totalCal = 0
+    var totalFat = 0
+    var totalCarb = 0
+    var totalProt = 0
+
 /**
 	* A private function used within this module to convert the given unit of measurement into grams in order to be used by FatSecret
 	@private
@@ -163,12 +168,23 @@ function changeToGrams(unit, amount) {
 			Carbs_g: (Math.fround(parseInt(info.foods.food.food_description.split(' ')[info.foods.food.food_description.split(' ').indexOf('Carbs:')+1].split('g')[0])/100) * changeToGrams(name[i].Unit.toLowerCase(),name[i].Amount)).toFixed(2),
 			Protein_g: (Math.fround(parseInt(info.foods.food.food_description.split(' ')[info.foods.food.food_description.split(' ').indexOf('Protein:')+1].split('g')[0])/100) * changeToGrams(name[i].Unit.toLowerCase(),name[i].Amount)).toFixed(2),
 		})
+    totalCal = totalCal + parseFloat(Nutrition[i].Calories_Kcal)
+    totalFat = totalFat + parseFloat(Nutrition[i].Fat_g)
+    totalCarb = totalCarb + parseFloat(Nutrition[i].Carbs_g)
+    totalProt = totalProt + parseFloat(Nutrition[i].Protein_g)
     p.appendChild(document.createTextNode(JSON.stringify(Nutrition[i])))
     p.appendChild(document.createElement("br"))
             }
             })
   }
+  p.appendChild(document.createTextNode('Total Calories: ' + totalCal + ', Total Fat: ' + totalFat + ', Total Carbs: ' + totalCarb + ', Total Protein: ' + totalProt))
+  p.appendChild(document.createElement("br"))
+  p.appendChild(document.createElement("br"))
+  var favButton = p.appendChild(document.createElement('button'))
+  favButton.appendChild(document.createTextNode('Favourite'))
   document.body.appendChild(p)
+
+
 	})
 	}
 	})

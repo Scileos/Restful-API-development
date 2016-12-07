@@ -5,7 +5,6 @@ const API_Shared_Secret = '6763ddbf8da14151af37025e94391ac2&' //Shared secret ke
 const FS_URL = 'http://platform.fatsecret.com/rest/server.api' //API URL
 const crypto = require('crypto') //SHA1 algorithm converter
 const rest = require('restler')  //Used to make CRUD requests
-const date = new Date
 
 /**
 	* This is a private function within the module that creates a suitable URL to call the FatSecret external API
@@ -14,6 +13,8 @@ const date = new Date
 	@returns {Object} returns an object of parmaters to use in the URL
 	*/
 function API_URL(search) {
+
+	const date = new Date
 
 	/** Order of objects matters! Will return error code 8 if not in this order
 	*  because the back end oauth_signature will not match yours
