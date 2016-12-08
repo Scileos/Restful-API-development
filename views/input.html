@@ -3,6 +3,13 @@
 <body>
 
 <div>
+	<input type="button" onclick="document.location.href='//localhost:3000/login'" value="Login"/>
+</div>
+
+<br>
+<br>	
+
+<div>
   Ingredients:<br>
   <input type="text" id="Ingredients" value="">
   <br>
@@ -190,6 +197,12 @@ function changeToGrams(unit, amount) {
 	})
 })
 })
+
+$(document).ready(function() {
+	$('#login').on('click', function() {
+		location.href='https://localhost:3000/login'
+		})
+	})		
 </script>  
 
 </body>

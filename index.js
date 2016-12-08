@@ -5,6 +5,7 @@ const server = restify.createServer()
 const FS_API = require ('./Public/FatSecret API - Nutrition.js') //Nutrition API
 const SP_API = require ('./Public/Spoonacular API - Recipes.js')//Recipe API
 const async = require('async')//Used to loop through requests one by one
+const register = require('./Public/register.js')
 
 const defaultPort = 3000
 
@@ -20,12 +21,43 @@ server.listen(port, function(err) {
 }
 )
 
+server.use(restify.bodyParser())
+
 server.get('/',
 	restify.serveStatic({
 		directory: './views',
-	 default: 'input.html'
+	 file: 'input.html'
 	})
 )
+
+server.get('/login',
+			restify.serveStatic({
+				directory: './views',
+				file: 'Login.html'
+			})
+	)
+
+server.get('/register',
+				restify.serveStatic({
+					directory: './views',
+					file: 'Register.html'
+				})
+	)
+
+server.post('/register/salt', function(req, res) {
+	register.salt(req.body).then((response) => {
+		res.json(response)
+	})
+})
+
+server.post('/register/user', function(req, res) {
+	const data = JSON.parse(req.body)
+	register.final(data.user, data.hashedPass).then((response) => {
+		res.json(response)
+	}).catch((err) => {
+		console.log(err)
+	})
+})
 
 /** Get nutrition based on search criteria, can only take one input */
 
