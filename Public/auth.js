@@ -13,7 +13,7 @@ const pool = sql.createPool({
 	connectionLimit: 10
 })
 
-exports.checkUser = (user) => 
+exports.checkUser = (user) =>
 	new Promise((resolve, reject) => {
 		const slt_query = `SELECT salt FROM users WHERE username='${user}'`
 		pool.query(slt_query, function(err, result) {
