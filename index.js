@@ -7,6 +7,7 @@ const SP_API = require ('./Public/Spoonacular API - Recipes.js')//Recipe API
 const async = require('async')//Used to loop through requests one by one
 const register = require('./Public/register.js')
 const auth = require('./Public/auth.js')
+const favourites = require('./Public/Favourites.js')
 
 const defaultPort = 3000
 
@@ -67,6 +68,16 @@ server.post('/auth', function(req, res) {
 		})
 	}).catch((err) => {
 		console.log(err)
+	})
+})
+
+server.post('/favourite', function(req, res) {
+	const data = JSON.parse(req.body)
+	favourites.getUserID(data.user).then((userID) => {
+		favourites.checkRecipes(userID, data.recipeID).then(() => {
+			favourites.addToFavourites(userID, data.recipeID, data.nutrition)
+			res.send('Added to favourites')
+		})
 	})
 })
 

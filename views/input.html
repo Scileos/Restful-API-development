@@ -197,55 +197,38 @@ function changeToGrams(unit, amount) {
 document.getElementById('fav').onclick = function() {
 	var username = prompt('Username')
 	var password = prompt('Password')
-		authorize(username, password)
-			new Promise((resolve, reject) => {
-				const getUserID = `SELECT user_id FROM users WHERE username='${username}`
-				pool.query(getUserID, function(err, result) {
-					if (err) {
-						reject(err)
-					} else {
-						resolve(result[0].user_id)
-					}
-				})
-			})
-					.then((response) => {
-						new Promise ((resolve, reject) => {
-							const checkRecipes = `SELECT recipe_id FROM favourite_rec WHERE user_id='${response}'`
-							pool.query(checkRecipes, function(err, result) {
-								for (const i in result) {
-									if (result[i].recipe_id === ID) {
-									reject('Already Favourited')
-									}
-								}
-								resolve(response)
-							})
+		authorize(username, password).then(() => {
+			addTofavourites(username, IDparse, Nutrition,totalCal,totalFat,totalCarb,totalProt)
+		})
+}
 
-						})
-							.then((response) => {
-								const query = `INSERT INTO favourite_rec (user_id, recipe_id, total_cal, total_fat, total_carb, total_prot) VALUES ('${response}', '${ID}', '${totalCal}','${totalFat}','${totalCarb}','${totalProt}')`
-								pool.query(query)
-									new Promise ((resolve, reject) => {
-										const checkIngData = `SELECT recipe_id FROM favourite_ing`
-										pool.query(checkIngData, function(err, result) {
-											for (const i in result) {
-												if(result[i].recipe_id === ID) {
-													reject()
-												}
-											}
-											resolve()
-										})
-									})
-										.then(() => {
-											const query = `INSERT INTO favourite_ing (recipe_id, Ingredient, Calories, Fat, Carbs, Protein) VALUES ('${ID}, '${Nutrition[i].Ingredient}', '${Nutrition[i].Calories_Kcal}', '${Nutrition[i].Fat_g}', '${Nutrition[i].Carbs_g}', '${Nutrition[i].Protien_g}')`
-												for (const i in Nutrition) {
-													pool.query(query)
-												}
-									})
-							})
-					})
+function addTofavourites(username, IDparse, Nutrition, totalCal, totalFat, totalCarb, totalProt) {
+	$.ajax({
+		type: 'POST',
+		url: '/favourite',
+		data: JSON.stringify({
+			'user': username,
+			'recipeID': IDparse,
+			'nutrition': {
+				'nutritionIng': Nutrition,
+				'totalCal': totalCal,
+				'totalFat': totalFat,
+				'totalCarb': totalCarb,
+				'totalProt': totalProt
+			}	
+		}),
+		error: function(err){
+			console.log(err)
+		},
+		success: function() {
+			console.log('Adding to favourites')
+		}
+	})
+}
 
 	function authorize(username, password) {
-		var checkAuth = $.ajax({
+		return new Promise ((resolve) => {	
+	$.ajax({
 			type: 'POST',
 			url: '/auth',
 			data: JSON.stringify({
@@ -258,14 +241,16 @@ document.getElementById('fav').onclick = function() {
 			success: function() {
 				console.log('Checking Credentials')
 			}
-		})	
+		})
+		resolve()
+	})	
 	}
-}
 })
-						}
+}
+						})
 			})
 })
-})
+
 	
 </script>  
 
