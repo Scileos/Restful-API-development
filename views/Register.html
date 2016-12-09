@@ -12,7 +12,7 @@
 		<button type="button" id="register">Register</button>	
 		<br>
 		<br>
-		<input type="button" onclick="document.location.href='//localhost:3000/login'" value="Back"/>
+		<input type="button" onclick="document.location.href='//localhost:3000/'" value="Back"/>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -20,40 +20,47 @@
 
 $(document).ready(function() {
 	$('#register').on('click', function() {
-	var async = true
-	var user = document.getElementById('username').value
-	var pass = document.getElementById('password').value
- var salt = $.ajax({
-		type: 'POST',
-		url: '/register/salt',
-		data: user,
-		error: function(err) {
-			console.log(err)
-		},
-		success: function() {
-			addData(user, pass, salt)
-		}
-	})
+		var async = true
+		var user = document.getElementById('username').value
+		var pass = document.getElementById('password').value
+
+ 	var salt = $.ajax({
+			type: 'POST',
+			url: '/register/salt',
+			data: user,
+			error: function(err) {
+				console.log(err)
+			},
+					success: function() {
+							addData(user, pass, salt)
+					}
+		})
 	})
 
+/**
+	* Adds new data to the users table
+	* @param {string} user - The username of the user
+	* @param {string} pass - The users password
+	* @param {string} salt - The users salt
+*/	
 	function addData(user, pass, salt) {
 		const slt = salt.responseJSON.salt
 		var sltpass = pass + slt
 		var hashedPass = sltpass
-	var registerUser = $.ajax({
-		type: 'POST',
-		url: '/register/user',
-		data: JSON.stringify({
-			'user': user,
-			'hashedPass': hashedPass
-		}),
-		error: function(err) {
-			console.log(err)
-		},
-		success: function() {
-			console.log('registerd')
-		}
-	})	
+		var registerUser = $.ajax({
+			type: 'POST',
+			url: '/register/user',
+			data: JSON.stringify({
+				'user': user,
+				'hashedPass': hashedPass
+			}),
+			error: function(err) {
+				console.log(err)
+			},
+				success: function() {
+					console.log('registerd')
+				}
+		})	
 	}
 })
 

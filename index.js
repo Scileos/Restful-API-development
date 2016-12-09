@@ -6,11 +6,12 @@ const FS_API = require ('./Public/FatSecret API - Nutrition.js') //Nutrition API
 const SP_API = require ('./Public/Spoonacular API - Recipes.js')//Recipe API
 const async = require('async')//Used to loop through requests one by one
 const register = require('./Public/register.js')
+const auth = require('./Public/auth.js')
 
 const defaultPort = 3000
 
-/** Create server listening on port 3000 */
 
+/** Create server listening on port 3000 */
 const port = process.env.PORT || defaultPort
 server.listen(port, function(err) {
 	if (err) {
@@ -21,8 +22,11 @@ server.listen(port, function(err) {
 }
 )
 
+/** Used for parsing request bodies */
 server.use(restify.bodyParser())
 
+
+/** On get request to base url return with the home page */
 server.get('/',
 	restify.serveStatic({
 		directory: './views',
@@ -30,13 +34,7 @@ server.get('/',
 	})
 )
 
-server.get('/login',
-			restify.serveStatic({
-				directory: './views',
-				file: 'Login.html'
-			})
-	)
-
+/** Return with the register page */
 server.get('/register',
 				restify.serveStatic({
 					directory: './views',
@@ -44,16 +42,29 @@ server.get('/register',
 				})
 	)
 
+/** POST request that registers a username and password salt */
 server.post('/register/salt', function(req, res) {
 	register.salt(req.body).then((response) => {
 		res.json(response)
 	})
 })
 
+/** POST request that fills in the blanks in the users table /password/ */
 server.post('/register/user', function(req, res) {
 	const data = JSON.parse(req.body)
 	register.final(data.user, data.hashedPass).then((response) => {
 		res.json(response)
+	}).catch((err) => {
+		console.log(err)
+	})
+})
+
+server.post('/auth', function(req, res) {
+	const data = JSON.parse(req.body)
+	auth.checkUser(data.user).then((result) => {
+		auth.checkPass(data.user, data.pass, result[0].salt).then((response) => {
+			res.json(response)
+		})
 	}).catch((err) => {
 		console.log(err)
 	})
