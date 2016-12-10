@@ -94,7 +94,7 @@ exports.viewFavourites = (userID) =>
 					const ingQuery = `SELECT Ingredient, Calories, Fat, Carbs, Protein FROM favourite_Ing WHERE recipe_id='${recipeID}'`
 					pool.query(ingQuery, function(err, result) {
 						if (err) {
-							reject()
+							reject('Invalid option')
 							console.log(err)
 						} else {
 							for (const i in result) {
@@ -106,6 +106,18 @@ exports.viewFavourites = (userID) =>
 				}, function() {
 					resolve(favObj)
 				})
+			}
+		})
+	})
+
+exports.deleteFav = (userID, toDelete) =>
+	new Promise ((resolve, reject) => {
+		const query = `DELETE FROM favourite_Rec WHERE user_id='${userID}' AND recipe_id='${toDelete}'`
+		pool.query(query, function(err){
+			if (err) {
+				reject(err)
+			} else {
+				resolve('Deleted recipe ' + toDelete + ' from favourites')
 			}
 		})
 	})

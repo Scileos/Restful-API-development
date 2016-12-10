@@ -91,6 +91,18 @@ server.get('/view/favourites/:username', function(req, res) {
 		})
 	})
 })
+
+server.del('/delFav/', function(req, res) {
+	const data = JSON.parse(req.body)
+	const toDelete = data.recipeID
+	const username = data.user
+	favourites.getUserID(username).then((userID) => {
+		favourites.deleteFav(userID, toDelete).then(() =>{
+			res.send('Deleted item')
+		})
+	})
+})
+
 /** Get nutrition based on search criteria, can only take one input */
 
 server.get('/nutrition/:search', function(req, res) {
