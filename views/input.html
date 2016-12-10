@@ -264,12 +264,46 @@ function addTofavourites(username, IDparse, Nutrition, totalCal, totalFat, total
 				p.appendChild(document.createElement('br'))
 				p.appendChild(document.createTextNode(JSON.stringify(favList.Ingredients[i])))
 				p.appendChild(document.createElement('br'))
-				document.body.appendChild(p)
 				}
+				p.appendChild(document.createElement('br'))
+				p.appendChild(document.createElement('br'))
+				p.appendChild(document.createElement('br'))
+				var delFav = p.appendChild(document.createElement('button'))
+				delFav.id = 'delFav'
+  			delFav.appendChild(document.createTextNode('Delete Item'))
+				
+				document.body.appendChild(p)
 
+				document.getElementById('delFav').onclick = function() {
+					var username = prompt('Username')
+					var password = prompt('Password')
+					authorize(username, password).then(() => {
+						var toDelete = prompt('Which item do you want to remove?')
+						deleteFavourite(username, toDelete)
+					})			
+				}
 			}
 		})
 	}	
+
+
+function deleteFavourite(username, toDelete) {
+	$.ajax({
+		type: 'DELETE',
+		url: `/delFav`,
+		data: JSON.stringify({
+			'user': username,
+			'recipeID': toDelete
+		}),
+		error: function(err) {
+			console.log (err)
+		},
+		success: function() {
+			console.log('Deleting recipe ' + toDelete + ' from favourites')
+		}
+
+	})
+}
 
 function authorize(username, password) {
 		return new Promise ((resolve) => {	
