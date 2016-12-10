@@ -81,6 +81,16 @@ server.post('/favourite', function(req, res) {
 	})
 })
 
+server.get('/view/favourites/:username', function(req, res) {
+	const user = req.params.username
+	favourites.getUserID(user).then((userID) => {
+		favourites.viewFavourites(userID).then((result) => {
+			res.setHeader('content-type', 'application/json')
+			res.setHeader('Allow', 'GET')
+			res.send(result)
+		})
+	})
+})
 /** Get nutrition based on search criteria, can only take one input */
 
 server.get('/nutrition/:search', function(req, res) {
