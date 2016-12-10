@@ -7,6 +7,13 @@
 </div>
 
 <br>
+<br>
+
+<div>
+	<button type="button" id="getFav">View Favourites</button>
+</div>	
+
+<br>
 <br>	
 
 <div>
@@ -225,8 +232,46 @@ function addTofavourites(username, IDparse, Nutrition, totalCal, totalFat, total
 		}
 	})
 }
+})
+}
+						})
+			})
 
-	function authorize(username, password) {
+  $('#getFav').on('click', function() {
+		par.innerHTML = ''
+		var username = prompt('Username')
+		var password = prompt('Password')
+		authorize(username, password).then(() => {
+			getFavourites(username)
+		})
+	})
+
+	function getFavourites(username) {
+		$.ajax({
+			type: 'GET',
+			url: `/view/favourites/${username}`,
+			processData: false,
+      contentType: false,
+			error: function(err) {
+				console.log(err)
+			},
+			success: function(favList) {
+				console.log('Getting Favourites list for ' + username)
+				par.innerHTML = ''
+				for (const i in favList.recipeIDs) {
+					p.appendChild(document.createElement('br'))
+				p.appendChild(document.createTextNode('Recipe ID: ' + favList.recipeIDs[i]))
+				p.appendChild(document.createElement('br'))
+				p.appendChild(document.createTextNode(JSON.stringify(favList.Ingredients[i])))
+				p.appendChild(document.createElement('br'))
+				document.body.appendChild(p)
+				}
+
+			}
+		})
+	}	
+
+function authorize(username, password) {
 		return new Promise ((resolve) => {	
 	$.ajax({
 			type: 'POST',
@@ -245,11 +290,9 @@ function addTofavourites(username, IDparse, Nutrition, totalCal, totalFat, total
 		resolve()
 	})	
 	}
+
 })
-}
-						})
-			})
-})
+
 
 	
 </script>  
