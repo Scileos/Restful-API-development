@@ -19,6 +19,23 @@ const pool = sql.createPool({
 	* @returns {Object} - The salt in an object
 */
 
+exports.checkIfExists = (user) =>
+	new Promise((resolve, reject) => {
+		const query = `SELECT username FROM users WHERE username='${user}'`
+		pool.query(query, function(err, result) {
+			if (err) {
+				reject(err)
+			} else {
+				if (result.length === 0) {
+					resolve()
+				} else {
+					reject('User already exists')
+				}
+			}
+		})
+	})
+
+
 exports.salt = (user) =>
 	new Promise((resolve, reject) => {
 		genSalt(user).then((salt) => {
