@@ -9,7 +9,10 @@
 	<input type="text" id="password" value=""> <br>
 		<br>
 		<br>
-		<button type="button" id="register">Register</button>	
+		<button type="button" id="register">Register</button>
+		<br>
+		<br>
+		<button type="button" id="update">Update Password</button>
 		<br>
 		<br>
 		<input type="button" onclick="document.location.href='//localhost:3000/'" value="Back"/>
@@ -34,6 +37,22 @@ $(document).ready(function() {
 					success: function() {
 							addData(user, pass, salt)
 					}
+		})
+	})
+
+	$('#update').on('click', function() {
+		var username = prompt('Username')
+		var password = prompt('Password')
+		authorize(username, password).then(() => {
+			var newPass = prompt('New Password')
+			var checkPass = prompt('Confirm New Password')
+			if( newPass === checkPass) {
+				updatePass(username, newPass).then(() => {
+					console.log('Changing Password')
+				})
+			} else {
+				console.log('Passwords did not match')
+			}
 		})
 	})
 
@@ -63,6 +82,44 @@ $(document).ready(function() {
 		})	
 	}
 })
+
+function updatePass(username, newPass) {
+	return new Promise ((resolve, reject) => {
+		$.ajax({
+			type: 'PUT',
+			url: `/updatePass/${username}`,
+			data: JSON.stringify({
+				'newPass': newPass
+			}),
+			error: function(err){
+				reject(err)
+			},
+			success: function() {
+				resolve()
+			}
+		})
+	})
+}
+
+function authorize(username, password) {
+		return new Promise ((resolve, reject) => {	
+	$.ajax({
+			type: 'POST',
+			url: '/auth',
+			data: JSON.stringify({
+				'user': username,
+				'pass': password
+			}),
+			error: function(err){
+				reject(err)
+			},
+			success: function() {
+				console.log('Checking Credentials')
+			}
+		})
+		resolve()
+	})	
+	}
 
 </script>
 

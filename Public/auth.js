@@ -1,6 +1,7 @@
 'use strict'
 
 const sql = require('mysql')
+const crypto = require('crypto')
 
 /** Create constant to enable access to MySQL */
 
@@ -38,6 +39,34 @@ new Promise((resolve, reject) => {
 			} else {
 				reject('Invalid Password')
 			}
+		}
+	})
+})
+
+exports.updatePassword = (userID, newPass) =>
+new Promise ((resolve, reject) => {
+	const saltLength = 16
+	crypto.randomBytes(saltLength, function(err, buffer) {
+		if (err) {
+			reject(err)
+		} else {
+			const newSalt = buffer.toString('hex')
+			const updateSalt = `UPDATE users SET Salt='${newSalt}' WHERE user_id='${userID}'`
+			pool.query(updateSalt, function(err) {
+				if (err) {
+					reject(err)
+				} else {
+					const newHashed = newPass + newSalt
+					const updateHashed = `UPDATE users SET HashedPass='${newHashed}' WHERE user_id='${userID}'`
+					pool.query(updateHashed, function(err) {
+						if (err) {
+							reject(err)
+						} else {
+							resolve ('Password Updated')
+						}
+					})
+				}
+			})
 		}
 	})
 })

@@ -306,7 +306,7 @@ function deleteFavourite(username, toDelete) {
 }
 
 function authorize(username, password) {
-		return new Promise ((resolve) => {	
+		return new Promise ((resolve, reject) => {	
 	$.ajax({
 			type: 'POST',
 			url: '/auth',
@@ -315,13 +315,12 @@ function authorize(username, password) {
 				'pass': password
 			}),
 			error: function(err){
-				console.log(err)
+				reject(err)
 			},
 			success: function() {
-				console.log('Checking Credentials')
+				resolve('Checking Credentials')
 			}
 		})
-		resolve()
 	})	
 	}
 

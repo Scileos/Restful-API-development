@@ -45,8 +45,10 @@ server.get('/register',
 
 /** POST request that registers a username and password salt */
 server.post('/register/salt', function(req, res) {
-	register.salt(req.body).then((response) => {
-		res.json(response)
+	register.checkIfExists(req.body).then(() => {
+		register.salt(req.body).then((response) => {
+			res.json(response)
+		})
 	})
 })
 
@@ -63,11 +65,9 @@ server.post('/register/user', function(req, res) {
 server.post('/auth', function(req, res) {
 	const data = JSON.parse(req.body)
 	auth.checkUser(data.user).then((result) => {
-		auth.checkPass(data.user, data.pass, result[0].salt).then((response) => {
-			res.json(response)
+		auth.checkPass(data.user, data.pass, result[0].salt).then(() => {
+			res.send('Authenticated')
 		})
-	}).catch((err) => {
-		console.log(err)
 	})
 })
 
@@ -92,7 +92,7 @@ server.get('/view/favourites/:username', function(req, res) {
 	})
 })
 
-server.del('/delFav/', function(req, res) {
+server.del('/delFav', function(req, res) {
 	const data = JSON.parse(req.body)
 	const toDelete = data.recipeID
 	const username = data.user
@@ -100,6 +100,15 @@ server.del('/delFav/', function(req, res) {
 		favourites.deleteFav(userID, toDelete).then(() =>{
 			res.send('Deleted item')
 		})
+	})
+})
+
+server.put('/updatePass/:username', function(req, res) {
+	const username = req.params.username
+	const data = JSON.parse(req.body)
+	favourites.getUserID(username).then((userID) => {
+		auth.updatePassword(userID, data.newPass)
+		res.send('Password Updated')
 	})
 })
 
