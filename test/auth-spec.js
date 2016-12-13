@@ -13,7 +13,7 @@ describe('auth.js', function() {
 
 		it('Should return with the users salt if the user exists in the SQL database', function() {
 			auth.checkUser('admin').then((result) => {
-				expect(result[0].salt).to.equal('5d599f1e26102d9f21c381278ae2b8d0')
+				expect(result[0].salt).to.equal('692ba070eb29d8907c7c10e575e2bebd')
 			})
 		})
 
@@ -35,7 +35,7 @@ describe('auth.js', function() {
 	describe('checkPass', function() {
 
 		it('Should resolve if the users password matches the one stored in the database', function() {
-			const checkPass = auth.checkPass('admin', 'LoremIpsum', '5d599f1e26102d9f21c381278ae2b8d0')
+			const checkPass = auth.checkPass('admin', 'LoremIpsum', '692ba070eb29d8907c7c10e575e2bebd')
 			return expect(checkPass).to.be.fulfilled
 		})
 

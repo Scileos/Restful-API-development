@@ -25,12 +25,11 @@ exports.checkIfExists = (user) =>
 		pool.query(query, function(err, result) {
 			if (err) {
 				reject(err)
+			}
+			if (result.length === 0) {
+				resolve()
 			} else {
-				if (result.length === 0) {
-					resolve()
-				} else {
-					reject('User already exists')
-				}
+				reject('User already exists')
 			}
 		})
 	})
@@ -41,7 +40,7 @@ exports.salt = (user) =>
 		genSalt(user).then((salt) => {
 			resolve({salt: salt})
 		}).catch(() => {
-			reject({success: false, data: 'Could not generate salt.'})
+			reject('Could not generate salt')
 		})
 	})
 
@@ -69,7 +68,7 @@ exports.final = (user, hash) =>
 	*@returns {string} - The generated salt
 */
 
-const genSalt = (user) =>
+const genSalt = module.exports.genSalt = (user) =>
 	new Promise((resolve, reject) => {
 		const saltLength = 16
 		crypto.randomBytes(saltLength, function(err, buffer) {
@@ -77,13 +76,23 @@ const genSalt = (user) =>
 			if (err) {
 				reject(err)
 			} else {
-				const query = `INSERT INTO users (username, Salt) VALUES ('${user}', '${salt}')`
-				pool.query(query, function(err) {
+				const testQuery = `SELECT username FROM users WHERE username='${user}'`
+				pool.query(testQuery, function(err, result) {
 					if (err) {
-						console.log(err)
 						reject(err)
-					}	else {
-						resolve(salt)
+					}
+					if (result.length === 0) {
+						const query = `INSERT INTO users (username, Salt) VALUES ('${user}', '${salt}')`
+						pool.query(query, function(err) {
+						if (err) {
+							console.log(err)
+							reject(err)
+						}	else {
+							resolve(salt)
+						}
+					})
+					} else {
+						reject('User already registered')
 					}
 				})
 			}
@@ -96,15 +105,18 @@ const genSalt = (user) =>
 	* @returns {Boolean} Resolves if the field is blank otherwise reject
 */
 
-const checkBlankPass= (user) =>
+const checkBlankPass = module.exports.checkBlankPass = (user) =>
 		new Promise((resolve, reject) => {
-			const query = `SELECT HashedPass FROM users WHERE username='${user}' AND HashedPass IS NULL`
-			pool.query(query, function(err) {
+			const query = `SELECT HashedPass FROM users WHERE username='${user}'`
+			pool.query(query, function(err, result) {
 				if (err) {
 					console.log(err)
 					reject()
-				} else {
+				}
+				if (result[0].HashedPass === null) {
 					resolve()
+				} else {
+					reject()
 				}
 			})
 		})
@@ -115,17 +127,39 @@ const checkBlankPass= (user) =>
 	* @param {String} hash - The hashed password
 	* @returns {Boolean} Resolve if successful, Reject if not
  */
-const appendUser = (user, hash) =>
+const appendUser = module.exports.appendUser = (user, hash) =>
 	new Promise((resolve, reject) => {
-		const query = `UPDATE users SET HashedPass='${hash}' WHERE username='${user}'`
-		pool.query(query, function(err) {
+		const checkQuery = `SELECT username FROM users WHERE username='${user}'`
+		pool.query(checkQuery, function(err, result) {
 			if (err) {
-				console.log(err)
-				reject()
+				reject(err)
+			}
+			if(result.length === 0) {
+				reject('User not in the database')
 			} else {
-				resolve()
+				const query = `UPDATE users SET HashedPass='${hash}' WHERE username='${user}'`
+				pool.query(query, function(err) {
+					if (err) {
+						console.log(err)
+						reject()
+					} else {
+						resolve()
+					}
+				})
 			}
 		})
 	})
+
+exports.deleteUser = (user) =>
+		new Promise ((resolve, reject) => {
+			const query = `DELETE FROM users WHERE username='${user}'`
+			pool.query(query, function(err) {
+				if (err) {
+					reject (err)
+				} else {
+					resolve()
+				}
+			})
+		})
 
 

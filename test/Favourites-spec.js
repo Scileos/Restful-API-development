@@ -36,19 +36,19 @@ describe('Favourites.js', function() {
 	describe('addToFavouritesRec', function() {
 
 		it('Should add items to favourites as long as there is no repeating data', function() {
-			const nutrition = {
-				nutritionIng: [{
-					Ingredient: 'test',
-					Calories_Kcal: 1,
-					Fat_g: 1,
-					Carbs_g: 1,
-					Protein_g: 1
+			const nutrition = JSON.stringify({
+				'nutritionIng': [{
+					'Ingredient': 'test',
+					'Calories_Kcal': 1,
+					'Fat_g': 1,
+					'Carbs_g': 1,
+					'Protein_g': 1
 				}],
-				totalCal: 1,
-				totalFat: 1,
-				totalCarb: 1,
-				totalProt: 1
-			}
+				'totalCal': 1,
+				'totalFat': 1,
+				'totalCarb': 1,
+				'totalProt': 1
+			})
 			return (fav.addToFavouritesRec(1, 1, nutrition)).should.eventually.equal('Adding to favourites')
 		})
 	})
@@ -88,15 +88,22 @@ describe('Favourites.js', function() {
 		})
 	})
 
-	describe('deleteFav', function() {
+	describe('deleteFavRec', function() {
 
 		it('Should delete a favourite from the database', function() {
-			fav.deleteFav(1,1).then(() => {
+			fav.deleteFavRec(1,1).then(() => {
 				fav.viewFavourites(1).then((result) => {
-					expect(result.recipeIDs.indexOf(1)).to.equal(0)
+					expect(result.recipeIDs.indexOf(1)).to.equal(-1)
 				})
 			})
 		})
 
+	})
+
+	describe('deleteFavIng', function() {
+
+		it('Should delete the favourite Ingredients from the database `TESTING PURPOSES ONLY`', function() {
+			return (fav.deleteFavIng(4)).should.eventually.be.fulfilled
+		})
 	})
 })

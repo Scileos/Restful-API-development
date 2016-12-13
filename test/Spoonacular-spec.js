@@ -8,7 +8,7 @@ const chai = require('chai')
 chai.use(ChaiAsPromised)
 chai.should()
 
-describe ('Spoonacular API - Recipes', function() {
+describe ('Spoonacular API - Recipes.js', function() {
 	
 	describe ('Recipe_URL', function() {
 

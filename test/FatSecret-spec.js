@@ -8,7 +8,7 @@ const chai = require('chai')
 chai.use(ChaiAsPromised)
 chai.should()
 
-describe('FatSecret API - Nutrition', function() {
+describe('FatSecret API - Nutrition.js', function() {
 
 	describe('API_URL', function() {
 		

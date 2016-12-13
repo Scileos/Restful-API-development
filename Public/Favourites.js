@@ -129,7 +129,7 @@ exports.viewFavourites = (userID) =>
 		})
 	})
 
-exports.deleteFav = (userID, toDelete) =>
+exports.deleteFavRec = (userID, toDelete) =>
 	new Promise ((resolve, reject) => {
 		const query = `DELETE FROM favourite_Rec WHERE user_id='${userID}' AND recipe_id='${toDelete}'`
 		pool.query(query, function(err){
@@ -140,3 +140,15 @@ exports.deleteFav = (userID, toDelete) =>
 			}
 		})
 	})
+
+exports.deleteFavIng = (recipeID) =>
+		new Promise ((resolve, reject) => {
+			const query = `DELETE FROM favourite_Ing WHERE recipe_id='${recipeID}'`
+			pool.query(query, function(err) {
+				if (err) {
+					reject(err)
+				} else {
+					resolve()
+				}
+			})
+		})
