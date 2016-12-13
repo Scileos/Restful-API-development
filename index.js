@@ -4,7 +4,6 @@ const restify = require('restify') //Used to create the server
 const server = restify.createServer()
 const FS_API = require ('./Public/FatSecret API - Nutrition.js') //Nutrition API
 const SP_API = require ('./Public/Spoonacular API - Recipes.js')//Recipe API
-const async = require('async')//Used to loop through requests one by one
 const register = require('./Public/register.js')
 const auth = require('./Public/auth.js')
 const favourites = require('./Public/Favourites.js')

@@ -9,19 +9,21 @@ const chaiHttp = require('chai-http')
 const chai = require('chai')
 
 
-
 chai.use(ChaiAsPromised)
 chai.use(chaiHttp)
 chai.should()
 
 describe('index.js', function() {
-	this.timeout(2000)
+	this.timeout(2500)
 
 	describe('/GET nutrition', function() {
 		it('Should get the nutrition based on the recipeID parameter', (done) => {
 			chai.request(index)
 						.get('/nutrition/721001')
 						.end((err, res) => {
+							if (err) {
+								console.log(err)
+							}
 							expect(res).to.have.status(200)
 							done()
 						})
@@ -33,6 +35,9 @@ describe('index.js', function() {
 			chai.request(index)
 				.get('/view/favourites/admin')
 				.end((err, res) => {
+					if (err) {
+						console.log(err)
+					}
 					expect(res).to.have.status(200)
 					done()
 				})
@@ -44,6 +49,9 @@ describe('index.js', function() {
 			chai.request(index)
 				.get('/recipeIng/apple')
 				.end((err, res) => {
+					if (err) {
+						console.log(err)
+					}
 					expect(res).to.have.status(200)
 					done()
 				})
@@ -58,6 +66,9 @@ describe('index.js', function() {
 			.post('/register/salt')
 			.send(data)
 			.end((err, res) => {
+				if (err) {
+					console.log(err)
+				}
 				expect(res).to.have.status(200)
 				done()
 			})
@@ -79,6 +90,9 @@ describe('index.js', function() {
 		.post('/register/user')
 		.send(data)
 		.end((err, res) => {
+			if (err) {
+			 console.log(err)
+			}
 			expect(res).to.have.status(200)
 			done()
 		})
@@ -96,6 +110,9 @@ describe('index.js', function() {
 		.post('/auth')
 		.send(data)
 		.end((err, res) => {
+			if (err) {
+				console.log(err)
+			}
 			expect(res).to.have.status(200)
 			done()
 		})
@@ -130,6 +147,9 @@ describe('index.js', function() {
 		.post('/favourite')
 		.send(data)
 		.end((err, res) => {
+			if (err) {
+				console.log(err)
+			}
 			expect(res).to.have.status(200)
 			done()
 		})
@@ -147,6 +167,9 @@ describe('index.js', function() {
 			.delete('/delFav')
 			.send(data)
 			.end((err, res) => {
+				if (err) {
+					console.log(err)
+				}
 				expect(res).to.have.status(200)
 				done()
 			})
@@ -158,12 +181,15 @@ describe('index.js', function() {
 
 		it('Should update a users password', function(done) {
 			const data =JSON.stringify({
-			'newPass': 'newPass'
+				'newPass': 'newPass'
 			})
 			chai.request(index)
 		.put('/updatePass/test_account')
 		.send(data)
 		.end((err, res) => {
+			if (err) {
+				console.log(err)
+			}
 			expect(res).to.have.status(200)
 			done()
 		})
