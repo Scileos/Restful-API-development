@@ -38,7 +38,7 @@ exports.checkRecipes = (userID, recipeID) =>
 				for (const i in result) {
 					if (result[i].recipe_id === recipeID) {
 						reject('Already Favourited')
-				}
+					}
 				}
 				resolve()
 			})

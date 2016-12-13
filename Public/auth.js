@@ -63,8 +63,7 @@ new Promise ((resolve, reject) => {
 				}
 				if (result.changedRows === 0) {
 					reject('Invalid Input')
-				}
-				else {
+				} else {
 					const newHashed = newPass + newSalt
 					const updateHashed = `UPDATE users SET HashedPass='${newHashed}' WHERE user_id='${userID}'`
 					pool.query(updateHashed, (err) => {

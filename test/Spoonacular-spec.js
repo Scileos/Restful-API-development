@@ -9,7 +9,7 @@ chai.use(ChaiAsPromised)
 chai.should()
 
 describe ('Spoonacular API - Recipes.js', function() {
-	
+
 	describe ('Recipe_URL', function() {
 
 		it ('Should create an appropriate URL to call the external API', function() {

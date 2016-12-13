@@ -1,7 +1,8 @@
 'use strict'
 
+/*global after: true */
+
 const reg = require ('../Public/register.js')
-const expect = require ('chai').expect
 const ChaiAsPromised = require('chai-as-promised')
 const chai = require('chai')
 

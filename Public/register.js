@@ -84,13 +84,13 @@ const genSalt = module.exports.genSalt = (user) =>
 					if (result.length === 0) {
 						const query = `INSERT INTO users (username, Salt) VALUES ('${user}', '${salt}')`
 						pool.query(query, function(err) {
-						if (err) {
-							console.log(err)
-							reject(err)
-						}	else {
-							resolve(salt)
-						}
-					})
+							if (err) {
+								console.log(err)
+								reject(err)
+							}	else {
+								resolve(salt)
+							}
+						})
 					} else {
 						reject('User already registered')
 					}
