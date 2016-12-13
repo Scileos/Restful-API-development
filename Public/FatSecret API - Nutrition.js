@@ -6,13 +6,14 @@ const FS_URL = 'http://platform.fatsecret.com/rest/server.api' //API URL
 const crypto = require('crypto') //SHA1 algorithm converter
 const rest = require('restler')  //Used to make CRUD requests
 
+
 /**
 	* This is a private function within the module that creates a suitable URL to call the FatSecret external API
  @private
 	@param {string}  search - The search criteria - Ingredient
 	@returns {Object} returns an object of parmaters to use in the URL
 	*/
-function API_URL(search) {
+const API_URL = module.exports.API_URL = (search) => {
 
 	const date = new Date
 

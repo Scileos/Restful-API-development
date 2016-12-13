@@ -2,6 +2,7 @@
 
 const rest = require ('restler')//Used to make CRUD requests
 const SP_URL = 'https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/'//API URL
+const async = require('async')
 
 
 /**
@@ -11,7 +12,7 @@ const SP_URL = 'https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recip
 	*@param {string} ingredient - Takes an input of 1 or more ingredients
 	*@returns {string} URL to send as a request
  */
-function Recipe_URL(ingredient) {
+const Recipe_URL = module.exports.Recipe_URL = (ingredient) => {
 
 //Get recipe by ingredient
 	const reqObject = {
@@ -55,7 +56,7 @@ exports.GetRecipes = (ingredients) => {
 
 /** Exports function that sends a GET request and recieves detailed information about a recipe based on the input ID */
 
-exports.searchById = (recipeID) => {
+const searchById = module.exports.searchById = (recipeID) => {
 	const apiCall = SP_URL + recipeID + '/information?includeNutrition=true'
 	return new Promise((resolve) => {
 		rest.get(apiCall, {
@@ -68,3 +69,38 @@ exports.searchById = (recipeID) => {
 		})
 	})
 }
+
+exports.fillRecipeObj = (Recipes) =>
+	new Promise ((resolve) => {
+		const recipeObj = {
+			recipeName: [] ,
+			recipeID: [],
+			recipeIngredients: []
+		}
+		for (const i in Recipes) {
+			recipeObj.recipeName[i] = Recipes[i].title
+			recipeObj.recipeID[i] = Recipes[i].id
+		}
+		for (const i in recipeObj.recipeName){
+			recipeObj.recipeIngredients[i] = []
+		}
+		resolve(recipeObj)
+	})
+
+exports.fillIngredients = (recipeObj) =>
+		new Promise ((resolve) => {
+			async.each(recipeObj.recipeID, function(recipeID, callback) {
+				searchById(recipeID).then((ID) => {
+					for (const n in ID.extendedIngredients) {
+						recipeObj.recipeIngredients[recipeObj.recipeID.indexOf(recipeID)][n] = {Ingredient: '', Amount: '', Unit: '' }
+						recipeObj.recipeIngredients[recipeObj.recipeID.indexOf(recipeID)][n].Ingredient = ID.extendedIngredients[n].name
+						recipeObj.recipeIngredients[recipeObj.recipeID.indexOf(recipeID)][n].Amount = ID.extendedIngredients[n].amount
+						recipeObj.recipeIngredients[recipeObj.recipeID.indexOf(recipeID)][n].Unit = ID.extendedIngredients[n].unitLong
+					}
+					callback()
+				})
+			}, function() {
+				resolve(recipeObj)
+			})
+		})
+

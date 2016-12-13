@@ -1,10 +1,21 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "description": "304CEM API",
-  "devDependencies": {},
+  "description": "304CEM Nutrition API",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/istanbul test ./node_modules/mocha/bin/_mocha -- --recursive -R spec"
+  },
+  "devDependencies": {
+    "istanbul": "^0.4.5"
+  },
   "dependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "chai-http": "^3.0.0",
+    "mocha": "^3.2.0",
     "mysql": "^2.12.0",
     "readline": "^1.3.0"
-  }
+  },
+  "author": "Jonathan Moore"
 }

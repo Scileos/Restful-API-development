@@ -75,8 +75,13 @@ server.post('/favourite', function(req, res) {
 	const data = JSON.parse(req.body)
 	favourites.getUserID(data.user).then((userID) => {
 		favourites.checkRecipes(userID, data.recipeID).then(() => {
-			favourites.addToFavourites(userID, data.recipeID, data.nutrition)
-			res.send('Added to favourites')
+			favourites.addToFavouritesRec(userID, data.recipeID, data.nutrition).then(() => {
+				favourites.checkIngredients(data.recipeID).then(() => {
+					favourites.addToFavouritesIng(data.recipeID, data.nutrition).then((result) => {
+						res.send(result)
+					})
+				})
+			})
 		})
 	})
 })
@@ -97,7 +102,7 @@ server.del('/delFav', function(req, res) {
 	const toDelete = data.recipeID
 	const username = data.user
 	favourites.getUserID(username).then((userID) => {
-		favourites.deleteFav(userID, toDelete).then(() =>{
+		favourites.deleteFavRec(userID, toDelete).then(() => {
 			res.send('Deleted item')
 		})
 	})
@@ -130,41 +135,15 @@ server.get('/recipeIng/:ingredients', function(req, res) {
 	res.setHeader('content-type', 'application/json')
 	res.setHeader('Allow', 'GET')
 	const ingredients = req.params.ingredients
-
-	new Promise((resolve) => {
-		const recipeObj = {
-			recipeName: [] ,
-			recipeID: [],
-			recipeIngredients: []
-		}
-
-		SP_API.GetRecipes(ingredients).then((result) => {
-			for (const i in result) {
-				recipeObj.recipeName[i] = result[i].title
-				recipeObj.recipeID[i] = result[i].id
-			}
-			for (const i in recipeObj.recipeName){
-				recipeObj.recipeIngredients[i] = []
-			}
-			resolve(recipeObj)
-		})
-	})
-
-	.then((recipeObj) => {
-		async.each(recipeObj.recipeID, function(recipeID, callback) {
-			SP_API.searchById(recipeID).then((ID) => {
-				for (const n in ID.extendedIngredients) {
-					recipeObj.recipeIngredients[recipeObj.recipeID.indexOf(recipeID)][n] = {Ingredient: '', Amount: '', Unit: '' }
-					recipeObj.recipeIngredients[recipeObj.recipeID.indexOf(recipeID)][n].Ingredient = ID.extendedIngredients[n].name
-					recipeObj.recipeIngredients[recipeObj.recipeID.indexOf(recipeID)][n].Amount = ID.extendedIngredients[n].amount
-					recipeObj.recipeIngredients[recipeObj.recipeID.indexOf(recipeID)][n].Unit = ID.extendedIngredients[n].unitLong
-				}
-				callback()
+	SP_API.GetRecipes(ingredients).then((result) => {
+		SP_API.fillRecipeObj(result).then((recipeObj) => {
+			SP_API.fillIngredients(recipeObj).then(() => {
+				res.send(recipeObj)
+				res.end
 			})
-		},function() {
-			res.send(recipeObj)
-			res.end
 		})
 	})
 })
 
+
+module.exports = server

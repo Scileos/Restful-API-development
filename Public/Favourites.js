@@ -20,6 +20,8 @@ exports.getUserID = (username) =>
 				pool.query(getUserID, function(err, result) {
 					if (err) {
 						reject(err)
+					} if (result.length === 0) {
+						reject('Invalid Username')
 					} else {
 						resolve(result[0].user_id)
 					}
@@ -31,48 +33,65 @@ exports.checkRecipes = (userID, recipeID) =>
 			const checkRecipes = `SELECT recipe_id FROM favourite_Rec WHERE user_id='${userID}'`
 			pool.query(checkRecipes, function(err, result) {
 				if (err) {
-					console.log(err)
-				} else {
-					for (const i in result) {
-						if (result[i].recipe_id === recipeID) {
-							reject('Already Favourited')
-						}
-					}
+					reject(err)
+				}
+				for (const i in result) {
+					if (result[i].recipe_id === recipeID) {
+						reject('Already Favourited')
+				}
 				}
 				resolve()
 			})
 		})
 
-exports.addToFavourites = (userID, recipeID, nutrition) => {
-	const query = `INSERT INTO favourite_Rec (user_id, recipe_id, total_cal, total_fat, total_carb, total_prot) VALUES ('${userID}', '${recipeID}', '${nutrition.totalCal}','${nutrition.totalFat}','${nutrition.totalCarb}','${nutrition.totalProt}')`
-	pool.query(query)
-	console.log(recipeID)
+exports.addToFavouritesRec = (userID, recipeID, nutrition) =>
 	new Promise ((resolve, reject) => {
-		const checkIngData = 'SELECT recipe_id FROM favourite_Ing'
-		pool.query(checkIngData, function(err, result) {
+		const query = `INSERT INTO favourite_Rec (user_id, recipe_id, total_cal, total_fat, total_carb, total_prot) VALUES ('${userID}', '${recipeID}', '${nutrition.totalCal}','${nutrition.totalFat}','${nutrition.totalCarb}','${nutrition.totalProt}')`
+		pool.query(query, function(err) {
 			if (err) {
-				console.log(err)
+				reject(err)
 			} else {
-				for (const i in result) {
-					if(result[i].recipe_id === recipeID) {
-						reject('Added to favourites')
-					}
-				}
+				resolve('Adding to favourites')
 			}
-			resolve('Added to favourites')
 		})
-	}).then(() => {
-		for (const i in nutrition.nutritionIng) {
-			const query = `INSERT INTO favourite_Ing (recipe_id, Ingredient, Calories, Fat, Carbs, Protein) VALUES ('${recipeID}', '${nutrition.nutritionIng[i].Ingredient}', '${nutrition.nutritionIng[i].Calories_Kcal}', '${nutrition.nutritionIng[i].Fat_g}', '${nutrition.nutritionIng[i].Carbs_g}',
-'${nutrition.nutritionIng[i].Protein_g}')`
-			pool.query(query, function(err) {
-				if (err){
-					console.log(err)
-				}
-			})
+	})
+
+
+exports.checkIngredients = (recipeID) =>
+new Promise ((resolve, reject) => {
+	const checkIngData = 'SELECT recipe_id FROM favourite_Ing'
+	pool.query(checkIngData, function(err, result) {
+		if (err) {
+			console.log(err)
+		}
+		let found = false
+		for (const i in result) {
+			if(result[i].recipe_id === recipeID) {
+				found = true
+			}
+		}
+		if (found === true) {
+			reject('Added to favourites')
+		} else {
+			resolve()
 		}
 	})
-}
+})
+
+exports.addToFavouritesIng = (recipeID, nutrition) =>
+new Promise((resolve, reject) => {
+	for (const i in nutrition.nutritionIng) {
+		const query = `INSERT INTO favourite_Ing (recipe_id, Ingredient, Calories, Fat, Carbs, Protein) VALUES ('${recipeID}', '${nutrition.nutritionIng[i].Ingredient}', '${nutrition.nutritionIng[i].Calories_Kcal}', '${nutrition.nutritionIng[i].Fat_g}', '${nutrition.nutritionIng[i].Carbs_g}',
+'${nutrition.nutritionIng[i].Protein_g}')`
+		pool.query(query, function(err) {
+			if (err){
+				reject(err)
+			} else {
+				resolve('Added to favourites')
+			}
+		})
+	}
+})
 
 exports.viewFavourites = (userID) =>
 	new Promise ((resolve, reject) => {
@@ -110,7 +129,7 @@ exports.viewFavourites = (userID) =>
 		})
 	})
 
-exports.deleteFav = (userID, toDelete) =>
+exports.deleteFavRec = (userID, toDelete) =>
 	new Promise ((resolve, reject) => {
 		const query = `DELETE FROM favourite_Rec WHERE user_id='${userID}' AND recipe_id='${toDelete}'`
 		pool.query(query, function(err){
@@ -121,3 +140,15 @@ exports.deleteFav = (userID, toDelete) =>
 			}
 		})
 	})
+
+exports.deleteFavIng = (recipeID) =>
+		new Promise ((resolve, reject) => {
+			const query = `DELETE FROM favourite_Ing WHERE recipe_id='${recipeID}'`
+			pool.query(query, function(err) {
+				if (err) {
+					reject(err)
+				} else {
+					resolve()
+				}
+			})
+		})

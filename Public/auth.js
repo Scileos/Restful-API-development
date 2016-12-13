@@ -17,9 +17,12 @@ const pool = sql.createPool({
 exports.checkUser = (user) =>
 	new Promise((resolve, reject) => {
 		const slt_query = `SELECT salt FROM users WHERE username='${user}'`
-		pool.query(slt_query, function(err, result) {
+		pool.query(slt_query, (err, result) => {
 			if (err) {
-				reject('Invalid Username')
+				reject(err)
+			}
+			if (result.length === 0) {
+				reject('Invalid username')
 			} else {
 				resolve(result)
 			}
@@ -30,14 +33,16 @@ exports.checkPass = (user, pass, salt) =>
 new Promise((resolve, reject) => {
 	const hashedPass = pass + salt
 	const query = `SELECT HashedPass FROM users WHERE username='${user}'`
-	pool.query(query, function(err, result) {
+	pool.query(query, (err, result) => {
 		if (err) {
+			reject(err)
+		} if (result.length === 0) {
 			reject('Invalid Password')
-		} else {
-			if (hashedPass === result[0].HashedPass) {
-				resolve()
-			} else {
+		} else{
+			 if(hashedPass !== result[0].HashedPass) {
 				reject('Invalid Password')
+			} else {
+				resolve()
 			}
 		}
 	})
@@ -52,13 +57,17 @@ new Promise ((resolve, reject) => {
 		} else {
 			const newSalt = buffer.toString('hex')
 			const updateSalt = `UPDATE users SET Salt='${newSalt}' WHERE user_id='${userID}'`
-			pool.query(updateSalt, function(err) {
+			pool.query(updateSalt, (err, result) => {
 				if (err) {
 					reject(err)
-				} else {
+				}
+				if (result.changedRows === 0) {
+					reject('Invalid Input')
+				}
+				else {
 					const newHashed = newPass + newSalt
 					const updateHashed = `UPDATE users SET HashedPass='${newHashed}' WHERE user_id='${userID}'`
-					pool.query(updateHashed, function(err) {
+					pool.query(updateHashed, (err) => {
 						if (err) {
 							reject(err)
 						} else {
