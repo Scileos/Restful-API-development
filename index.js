@@ -75,8 +75,13 @@ server.post('/favourite', function(req, res) {
 	const data = JSON.parse(req.body)
 	favourites.getUserID(data.user).then((userID) => {
 		favourites.checkRecipes(userID, data.recipeID).then(() => {
-			favourites.addToFavourites(userID, data.recipeID, data.nutrition)
-			res.send('Added to favourites')
+			favourites.addToFavouritesRec(userID, data.recipeID, data.nutrition).then(() => {
+				favourites.checkIngredients(data.recipeID).then(() => {
+					favourites.addToFavouritesIng(data.recipeID, data.nutrition).then((result) => {
+						res.send(result)
+					})
+				})
+			})
 		})
 	})
 })

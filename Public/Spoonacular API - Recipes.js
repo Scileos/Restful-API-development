@@ -11,7 +11,7 @@ const SP_URL = 'https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recip
 	*@param {string} ingredient - Takes an input of 1 or more ingredients
 	*@returns {string} URL to send as a request
  */
-function Recipe_URL(ingredient) {
+const Recipe_URL = module.exports.Recipe_URL = (ingredient) => {
 
 //Get recipe by ingredient
 	const reqObject = {
