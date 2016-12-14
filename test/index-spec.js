@@ -4,7 +4,7 @@ const index = require ('../index.js')
 const reg = require ('../Public/register.js')
 const expect = require ('chai').expect
 const ChaiAsPromised = require('chai-as-promised')
-const fav = require('../Public/favourites.js')
+const fav = require('../Public/Favourites.js')
 const chaiHttp = require('chai-http')
 const chai = require('chai')
 
