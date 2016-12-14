@@ -15,7 +15,7 @@ chai.use(chaiHttp)
 chai.should()
 
 describe('index.js', function() {
-	this.timeout(2000)
+	this.timeout(2500)
 
 	describe('/GET nutrition', function() {
 		it('Should get the nutrition based on the recipeID parameter', (done) => {

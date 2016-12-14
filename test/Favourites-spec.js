@@ -25,11 +25,11 @@ describe('Favourites.js', function() {
 	describe('checkRecipes', function() {
 
 		it('Should reject if the recipe is already favourited', function() {
-			return (fav.checkRecipes(1, 426130)).should.eventually.be.rejectedWith('Already Favourited')
+			return (fav.checkRecipes(1, 721001)).should.eventually.be.rejectedWith('Already Favourited')
 		})
 
 		it('Should resolve if the recipe is NOT already favourited', function() {
-			return (fav.checkRecipes(1, 721001)).should.eventually.be.fulfilled
+			return (fav.checkRecipes(1, 234234)).should.eventually.be.fulfilled
 		})
 	})
 
