@@ -11,7 +11,7 @@ chai.should()
 describe('FatSecret API - Nutrition.js', function() {
 
 	describe('API_URL', function() {
-		
+
 		it('Should insert the search query into the request object', function() {
 			expect(FS.API_URL('apple').search_expression).to.equal('apple')
 		})
@@ -25,8 +25,6 @@ describe('FatSecret API - Nutrition.js', function() {
 		})
 
 	})
-
-
 
 
 })
