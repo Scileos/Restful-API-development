@@ -6,7 +6,7 @@ const crypto = require('crypto')
 /** Create constant to enable access to MySQL */
 
 const pool = sql.createPool({
-	user: 'admin',
+	user: 'root',
 	password: 'LoremIpsum',
 	host: '137.74.116.221',
 	port: 3306,
