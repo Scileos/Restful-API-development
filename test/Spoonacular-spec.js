@@ -20,6 +20,8 @@ describe ('Spoonacular API - Recipes.js', function() {
 
 	describe('GetRecipes', function() {
 
+		this.timeout(1000)
+
 		it('Should be able to send external Get requests and return appropriate data', function() {
 			return (SP.GetRecipes('apple')).should.eventually.be.fulfilled
 		})
