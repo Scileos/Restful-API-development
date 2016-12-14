@@ -8,7 +8,7 @@ const register = require('./Public/register.js')
 const auth = require('./Public/auth.js')
 const favourites = require('./Public/Favourites.js')
 
-const defaultPort = 3000
+const defaultPort = 8080
 
 
 /** Create server listening on port 3000 */
