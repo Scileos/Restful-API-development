@@ -16,6 +16,9 @@ It allows users to register and add to a favourites list as well
 
 My live api can be found at: http://137.74.116.221:3000/
 
+Or if you want to test it locally you can run 'index.js' and access it through
+'localhost:3000'
+
 
 
 
