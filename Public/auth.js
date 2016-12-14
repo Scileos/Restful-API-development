@@ -14,6 +14,11 @@ const pool = sql.createPool({
 	connectionLimit: 10
 })
 
+/**
+	* Function that checks if the user is in the database
+	* @param {string} user - The user being searched
+	* @return {string} Returns with the users salt
+ */
 exports.checkUser = (user) =>
 	new Promise((resolve, reject) => {
 		const slt_query = `SELECT salt FROM users WHERE username='${user}'`
@@ -29,6 +34,13 @@ exports.checkUser = (user) =>
 		})
 	})
 
+/**
+	* Function that checks if the users password matches the one in the database
+	* @param {string} user - The users username
+	* @param {string} pass - The users password
+	* @param {string} salt - The users corresponding salt
+	* @return {boolean} resolves if the password matches
+ */
 exports.checkPass = (user, pass, salt) =>
 new Promise((resolve, reject) => {
 	const hashedPass = pass + salt
@@ -48,6 +60,12 @@ new Promise((resolve, reject) => {
 	})
 })
 
+/**
+	* Function that updates a users password
+	* @param {int} userID - The usersID based on their username
+	* @param {string} newPass - The users new password
+	* @return {string} appropriate message
+ */
 exports.updatePassword = (userID, newPass) =>
 new Promise ((resolve, reject) => {
 	const saltLength = 16

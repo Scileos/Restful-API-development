@@ -70,6 +70,11 @@ const searchById = module.exports.searchById = (recipeID) => {
 	})
 }
 
+/**
+	* Function that fills the finl=al object with recipes
+	* @param {object} Recipes - The recipes to add
+	* @return {object} recipeObj - The recipes in a new object
+ */
 exports.fillRecipeObj = (Recipes) =>
 	new Promise ((resolve) => {
 		const recipeObj = {
@@ -87,6 +92,11 @@ exports.fillRecipeObj = (Recipes) =>
 		resolve(recipeObj)
 	})
 
+/**
+	* Function that fills the rest of the object with the ingredients
+	* @param {object} recipeObj - The object of recipes
+	* @return {object} recipeObj - The full recipeObj
+ */
 exports.fillIngredients = (recipeObj) =>
 		new Promise ((resolve) => {
 			async.each(recipeObj.recipeID, function(recipeID, callback) {

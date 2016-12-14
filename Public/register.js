@@ -34,7 +34,11 @@ exports.checkIfExists = (user) =>
 		})
 	})
 
-
+/**
+	* Function that calls genSalt and returns the salt
+	* @param {string} user - The username
+	* @return {boolean} resolves with the users salt
+ */
 exports.salt = (user) =>
 	new Promise((resolve, reject) => {
 		genSalt(user).then((salt) => {
@@ -150,6 +154,11 @@ const appendUser = module.exports.appendUser = (user, hash) =>
 		})
 	})
 
+/**
+	* Function that deletes a user
+	* @param {string} user - User to be deleted
+	* @return {boolean} resolves when deleted
+ */
 exports.deleteUser = (user) =>
 		new Promise ((resolve, reject) => {
 			const query = `DELETE FROM users WHERE username='${user}'`

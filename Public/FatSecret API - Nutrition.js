@@ -71,6 +71,11 @@ const API_URL = module.exports.API_URL = (search) => {
 	* and returns it as a promise
  */
 
+/**
+	* Function that gets nutrition based on a search criteria
+	* @param {string} search - The search criteria
+	* @return {object} data - Nutritional information
+ */
 exports.GetNutrition = (search) => {
 	const data = API_URL(search)
 	return new Promise((resolve) => {

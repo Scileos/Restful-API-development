@@ -14,6 +14,11 @@ const pool = sql.createPool({
 	connectionLimit: 10
 })
 
+/**
+	* Function that gets the users ID based on their username
+	* @param {string} username - The users username
+	* @return {int} Returns with the userID
+ */
 exports.getUserID = (username) =>
 			new Promise((resolve, reject) => {
 				const getUserID = `SELECT user_id FROM users WHERE username='${username}'`
@@ -28,6 +33,12 @@ exports.getUserID = (username) =>
 				})
 			})
 
+/**
+	* Function that checks if the recipe is already Favourited
+	* @param {int} userID - The users userID
+	* @param {int} recipeID - The recipe to be Favourited
+	* @return {boolean} resolves if the recipe is not already in the favourite_Rec database
+ */
 exports.checkRecipes = (userID, recipeID) =>
 		new Promise ((resolve, reject) => {
 			const checkRecipes = `SELECT recipe_id FROM favourite_Rec WHERE user_id='${userID}'`
@@ -44,6 +55,13 @@ exports.checkRecipes = (userID, recipeID) =>
 			})
 		})
 
+/**
+	* Function that adds the recipe to the favourite_Rec database
+	* @param {int} userID - The users userID
+	* @param {int} recipeID - The recipe to be Favourited
+	* @param {object} nutrition - The relevent data to insert into the database
+	* @return {string} appropriate message
+ */
 exports.addToFavouritesRec = (userID, recipeID, nutrition) =>
 	new Promise ((resolve, reject) => {
 		const query = `INSERT INTO favourite_Rec (user_id, recipe_id, total_cal, total_fat, total_carb, total_prot) VALUES ('${userID}', '${recipeID}', '${nutrition.totalCal}','${nutrition.totalFat}','${nutrition.totalCarb}','${nutrition.totalProt}')`
@@ -56,7 +74,11 @@ exports.addToFavouritesRec = (userID, recipeID, nutrition) =>
 		})
 	})
 
-
+/**
+	* Function to check if the ingredients are already in the favourite_Ing database
+	* @param {int} recipeID - The recipeID to check by
+	* @return {boolean} resolves if theingredients aren't already in the database
+ */
 exports.checkIngredients = (recipeID) =>
 new Promise ((resolve, reject) => {
 	const checkIngData = 'SELECT recipe_id FROM favourite_Ing'
@@ -78,6 +100,12 @@ new Promise ((resolve, reject) => {
 	})
 })
 
+/**
+	* Function to add favourite ingredients to the database
+	* @param {int} recipeID - The relevant recipeID
+	* @param {object} nutrition - The relevan nutritional information
+	* @return {string} appropriate message
+ */
 exports.addToFavouritesIng = (recipeID, nutrition) =>
 new Promise((resolve, reject) => {
 	for (const i in nutrition.nutritionIng) {
@@ -93,6 +121,11 @@ new Promise((resolve, reject) => {
 	}
 })
 
+/**
+	* Function that returns an object of the users favourites
+	* @param {int} userID - The users userID
+	* @return {object} returns with an object of the users favourites
+ */
 exports.viewFavourites = (userID) =>
 	new Promise ((resolve, reject) => {
 		const favObj = {
@@ -129,6 +162,12 @@ exports.viewFavourites = (userID) =>
 		})
 	})
 
+/**
+	* Function that deletes a favourite item
+	* @param {int} userID - The users ID
+	* @param {int} toDelete - The recipeId to deletes
+	* @return {string} appropriate message
+ */
 exports.deleteFavRec = (userID, toDelete) =>
 	new Promise ((resolve, reject) => {
 		const query = `DELETE FROM favourite_Rec WHERE user_id='${userID}' AND recipe_id='${toDelete}'`
@@ -141,6 +180,11 @@ exports.deleteFavRec = (userID, toDelete) =>
 		})
 	})
 
+/**
+	* Function that deletes favourite ingredients - only used in testing
+	* @param {int} recipeID - The ID to deletes
+	* @return {boolean} resolves if Deleted
+ */
 exports.deleteFavIng = (recipeID) =>
 		new Promise ((resolve, reject) => {
 			const query = `DELETE FROM favourite_Ing WHERE recipe_id='${recipeID}'`
